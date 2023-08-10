@@ -1,9 +1,4 @@
-type TodoInput = {
-  userId: number;
-  id: number;
-  title: string;
-  completed: boolean;
-};
+import { TodoResponse } from '../api/type';
 
 export class Todo {
   public userId: number;
@@ -11,7 +6,7 @@ export class Todo {
   public title: string;
   public completed: boolean;
 
-  constructor(value: TodoInput) {
+  constructor(value: TodoResponse) {
     this.userId = value.userId;
     this.id = value.id;
     this.title = value.title;

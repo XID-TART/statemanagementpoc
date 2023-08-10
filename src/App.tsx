@@ -1,21 +1,25 @@
 import { useEffect, useState } from 'react';
 import { TodoItem } from './components/TodoItem';
 import { Todo } from './domain/Todo';
+import { request } from './api/request';
+import { TodoResponse, UserResponse } from './api/type';
+import { TodoListViewModel } from './viewModel/TodoListViewModel';
 
 function App() {
-  const [todoList, setTodoList] = useState([]);
+  const [todoListVM, setTodoListVM] = useState<TodoListViewModel | null>(null);
 
   useEffect(() => {
-    fetch('https://jsonplaceholder.typicode.com/users/1/todos')
-      .then((res) => res.json())
-      .then((todoList) => {
-        setTodoList(todoList.map((todo: any) => new Todo(todo)));
-      });
+    Promise.all([
+      request<UserResponse>({ url: 'users/1' }),
+      request<TodoResponse[]>({ url: 'users/1/todos' }),
+    ]).then(([user, todoList]) => {
+      setTodoListVM(new TodoListViewModel(todoList, user));
+    });
   }, []);
 
   return (
     <>
-      {todoList.map((todo) => (
+      {todoListVM?.todoList.map((todo) => (
         <TodoItem todo={todo} />
       ))}
     </>
